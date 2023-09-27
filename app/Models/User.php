@@ -21,6 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'department_id',
+        'birth_date',
+        'gender',
+        'starting_date',
+        'role',
+        'status',
     ];
 
     /**
@@ -42,4 +49,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function manager()
+    {
+        return $this->hasOne(Department::class, 'manager_id');
+    }
+
+    public function updateUser($user)
+    {
+        return User::update([
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'birth_date' => $user['birth_date'],
+            'gender' => $user['gender'],
+            'starting_date' => $user['starting_date'],
+            'status' => $user['status'],
+            'departmment' => $user['department'],
+        ]);
+    }
 }
