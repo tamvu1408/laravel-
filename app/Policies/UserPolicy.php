@@ -31,9 +31,13 @@ class UserPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        //
+        if ($user->role === config('constant.ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -62,7 +66,11 @@ class UserPolicy
         }
 
         if ($user->role === config('constant.ROLE_SUBADMIN')) {
-            return $user->id === $targetUser->department->manager_id;
+            if ($targetUser->department && $targetUser->department->manager_id) {
+                return $user->id === $targetUser->department->manager_id;
+            }
+
+            return false;
         }
 
         return $user->id === $targetUser->id;

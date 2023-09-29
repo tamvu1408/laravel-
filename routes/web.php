@@ -24,9 +24,13 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware('auth')->group(function(){
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('/employee', [UserController::class, 'index'])->name('employee.index');
-    Route::get('/employee/{user}', [UserController::class, 'show'])->name('employee.show');
-    Route::post('/employee/update/{user}', [UserController::class, 'update'])->name('employee.update');
-    Route::post('/employee/delete/{user}', [UserController::class, 'delete'])->name('employee.delete');
     Route::get('/department', [DepartmentController::class, 'index'])->name('department.index');
+    Route::resource('users', UserController::class)->names([
+        'index' => 'employee.index',
+        'show' => 'employee.show',
+        'create' => 'employee.create',
+        'store' => 'employee.store',
+        'update' => 'employee.update',
+        'destroy' => 'employee.delete',
+    ]);
 });

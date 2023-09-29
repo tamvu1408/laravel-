@@ -3,6 +3,7 @@
 return [
     'ROLE_ADMIN' => 3,
     'ROLE_SUBADMIN' => 2,
+    'EMPLOYEE' => 1,
     
     'MALE' => 1,
     'FEMALE' => 2,

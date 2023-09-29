@@ -62,14 +62,13 @@ class User extends Authenticatable
 
     public function updateUser($user)
     {
-        return User::update([
-            'name' => $user['name'],
-            'email' => $user['email'],
-            'birth_date' => $user['birth_date'],
-            'gender' => $user['gender'],
-            'starting_date' => $user['starting_date'],
-            'status' => $user['status'],
-            'departmment' => $user['department'],
-        ]);
+        return User::update($user);
+    }
+
+    public static function createUser($user)
+    {
+        $user['password'] = bcrypt($user['password']);
+        
+        return User::create($user);
     }
 }

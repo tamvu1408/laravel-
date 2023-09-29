@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,12 +23,28 @@ class EmployeeRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $uniqueEmail = 'unique:users';
+        if ($this->isMethod('PUT')) {
+            $uniqueEmail = 'unique:users,email,' . $this->user->id;
+            
+        };
+
+        $rules = [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->user->id,
+            'email' => 'required|email|' . $uniqueEmail,
+            'birth_date' => 'nullable|date|before_or_equal:' . Carbon::now()->subYears(18)->format('d-m-Y'),
             'starting_date' => 'required|date|before:tomorrow',
             'status' => 'required',
             'department' => 'required',
         ];
+
+        if ($this->isMethod('POST')) {
+            $rules['username'] = 'required|unique:users';
+            $rules['password'] = 'required|confirmed';
+            $rules['password_confirmation'] = 'required';
+            $rules['role'] = 'required';
+        };
+
+        return $rules;
     }
 }
