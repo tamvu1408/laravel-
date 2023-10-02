@@ -26,7 +26,6 @@ class EmployeeRequest extends FormRequest
         $uniqueEmail = 'unique:users';
         if ($this->isMethod('PUT')) {
             $uniqueEmail = 'unique:users,email,' . $this->user->id;
-            
         };
 
         $rules = [
@@ -43,6 +42,7 @@ class EmployeeRequest extends FormRequest
             $rules['password'] = 'required|confirmed';
             $rules['password_confirmation'] = 'required';
             $rules['role'] = 'required';
+            $rules['avatar'] = 'nullable|mimes:jpeg,png,jpg|max:2048';
         };
 
         return $rules;

@@ -5,25 +5,19 @@ namespace App\Repositories\User;
 use App\Models\User;
 use App\Models\Department;
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
-class UserRepository implements UserRepositoryInterface 
+class UserRepository implements UserRepositoryInterface
 {
     private User $user;
-    public function __construct(User $user) 
+    public function __construct(User $user)
     {
         $this->user = $user;
     }
 
     public function getAll()
     {
-        $users = [];
-        if (Gate::allows('viewAny', User::class)) {
-            $users = User::paginate(10);
-        } else {
-            $user = auth()->user();
-            $users = collect([$user]);
-        }
+        $users = User::paginate(10);
 
         return $users;
     }
@@ -48,5 +42,19 @@ class UserRepository implements UserRepositoryInterface
     public function delete($userId)
     {
         return $this->user->destroy($userId);
+    }
+
+    public function getProfile()
+    {
+        return Auth::user();
+    }
+
+    public function changeAvatar($filePath)
+    {
+        // $user = Auth::user();
+        $user = new User();
+        $user->find(Auth::id());
+        $user->avatar = $filePath;
+        $user->save();
     }
 }

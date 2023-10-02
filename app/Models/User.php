@@ -28,6 +28,7 @@ class User extends Authenticatable
         'starting_date',
         'role',
         'status',
+        'avatar',
     ];
 
     /**
@@ -65,7 +66,7 @@ class User extends Authenticatable
         return User::update($user);
     }
 
-    public static function createUser($user)
+    public function createUser($user)
     {
         $user['password'] = bcrypt($user['password']);
         

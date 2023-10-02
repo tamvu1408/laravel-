@@ -13,4 +13,8 @@ interface UserRepositoryInterface
     public function update($userId, array $attributes);
 
     public function delete($userId);
+
+    public function getProfile();
+
+    public function changeAvatar($filePath);
 }

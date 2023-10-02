@@ -15,7 +15,6 @@ class Department extends Model
         'status',
     ];
 
-
     public function employees()
     {
         return $this->hasMany(User::class);
@@ -28,12 +27,6 @@ class Department extends Model
 
     public static function getList()
     {
-        $departments = Department::all();
-        $list = [];
-        foreach ($departments as $d) {
-            array_push($list, ['department' => $d, 'manager' => $d->name]);
-        }
-
-        return $list;
+        return Department::all();
     }
 }

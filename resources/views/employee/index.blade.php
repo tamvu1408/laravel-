@@ -60,7 +60,6 @@
         </tbody>
         @endforeach
     </table>
-    @if ( Gate::allows('viewAny', App\Models\User::class) )
     <div class="pagination-container">
         <ul class="pagination">
             @if ($users->currentPage() > 1)
@@ -83,9 +82,8 @@
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-                @endif
+            @endif
         </ul>
     </div>
-    @endif
 </div>
 @endsection

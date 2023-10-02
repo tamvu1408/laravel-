@@ -9,11 +9,11 @@
             <th>Phòng ban</th>
             <th>Quản lý</th>
         </tr>
-        @foreach ($departments as $key => $d)
+        @foreach ($departments as $key => $department)
         <tr>
             <td>{{ $key + 1 }}</td>
-            <td>{{ $d['department']->name }}</td>
-            <td>{{ $d['manager'] }}</td>
+            <td>{{ $department->name }}</td>
+            <td>{{ $department->manager->name ?? '' }}</td>
         </tr>
         @endforeach
     </table>

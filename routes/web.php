@@ -22,9 +22,11 @@ Route::get('/login', function () {
 });
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/department', [DepartmentController::class, 'index'])->name('department.index');
+    Route::get('/users/profile', [UserController::class, 'getProfile'])->name('employee.profile');
+    Route::post('/users/update_avatar', [UserController::class, 'changeAvatar'])->name('employee.update_avatar');
     Route::resource('users', UserController::class)->names([
         'index' => 'employee.index',
         'show' => 'employee.show',

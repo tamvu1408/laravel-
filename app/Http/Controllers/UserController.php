@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Requests\EmployeeRequest;
 use App\Repositories\UserRepositoryInterface;
 
@@ -13,6 +14,7 @@ class UserController extends Controller
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
+        $this->authorizeResource(User::class, 'user');
         $this->userRepository = $userRepository;
     }
 
@@ -31,7 +33,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', User::class);
         $departments = $this->userRepository->create();
 
         return view('employee.create', compact('departments'));
@@ -42,15 +43,20 @@ class UserController extends Controller
      */
     public function store(EmployeeRequest $request)
     {
-        $this->authorize('create', User::class);
-
-        if ($request->validated()) {
-            $this->userRepository->store($request->all());
-
-            return redirect()->back()->with('success', 'Thêm thành công !');
-        } else {
+        if (!$request->validated()) {
             return redirect()->back()->withInput();
         }
+        $data = $request->all();
+
+        if ($request->hasFile('avatar')) {
+            $image = $request->file('avatar');
+            $storedPath = $image->move('avatars', $image->getClientOriginalName());
+            $data['avatar'] = $storedPath;
+        }
+
+        $this->userRepository->store($data);
+
+        return redirect()->back()->with('success', 'Thêm thành công !');
     }
 
     /**
@@ -58,7 +64,6 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $this->authorize('view', $user);
         $departments = $this->userRepository->create();
 
         return view('employee.show', compact('user', 'departments'));
@@ -77,14 +82,12 @@ class UserController extends Controller
      */
     public function update(EmployeeRequest $request, User $user)
     {
-        $this->authorize('update', $user);
-        if ($request->validated()) {
-            $this->userRepository->update($user->id, $request->all());
-
-            return redirect()->back()->with('success', 'Chỉnh sửa thành công !');
-        } else {
+        if (!$request->validated()) {
             return redirect()->back()->withInput();
         }
+        $this->userRepository->update($user->id, $request->all());
+
+        return redirect()->back()->with('success', 'Chỉnh sửa thành công !');
     }
 
     /**
@@ -92,9 +95,29 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $this->authorize('delete', $user);
         $this->userRepository->delete($user->id);
 
         return redirect()->back()->with('success', 'Xóa ' . $user->name . ' thành công!');
+    }
+
+    public function getProfile()
+    {
+        $user  = $this->userRepository->getProfile();
+        $departments = $this->userRepository->create();
+        return view('employee.profile', compact('user', 'departments'));
+    }
+
+    public function changeAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $image = $request->file('avatar');
+            $storedPath = $image->move('avatars', $image->getClientOriginalName());
+            $this->userRepository->changeAvatar($storedPath);
+        }
+        return redirect()->back();
     }
 }

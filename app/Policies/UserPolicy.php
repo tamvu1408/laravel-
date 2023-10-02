@@ -25,7 +25,7 @@ class UserPolicy
             return true;
         }
 
-        return $user->id === $targetUser->id;
+        return false;
     }
 
     /**
@@ -66,14 +66,12 @@ class UserPolicy
         }
 
         if ($user->role === config('constant.ROLE_SUBADMIN')) {
+
             if ($targetUser->department && $targetUser->department->manager_id) {
                 return $user->id === $targetUser->department->manager_id;
             }
-
-            return false;
+            return true;
         }
-
-        return $user->id === $targetUser->id;
     }
 
     /**

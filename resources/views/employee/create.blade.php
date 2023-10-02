@@ -9,7 +9,7 @@
             </div>
             @endif
             <h4>Thêm nhân viên</h4>
-            <form action="{{ route('employee.store') }}" method="POST">
+            <form action="{{ route('employee.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3 row">
                     <label class="col-sm-2 col-form-label" for="name">Name</label>
@@ -82,8 +82,8 @@
                     <div class="col-sm-10">
                         <select name="department" class="form-select @error('department') is-invalid @enderror" value="{{ old('department') }}">
                             <option value="">--department--</option>
-                            @foreach ($departments as $d)
-                            <option value="{{ $d['department']->id }}">{{ $d['department']->name }}</option>
+                            @foreach ($departments as $department)
+                            <option value="{{ $department->id }}">{{ $department->name ?? '' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -119,6 +119,15 @@
                         <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation">
                     </div>
                     @error('password_confirmation')
+                    <strong>{{ $message }}</strong>
+                    @enderror
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label" for="avatar">Ảnh đại diện</label>
+                    <div class="col-sm-10">
+                        <input type="file" class="form-control @error('avatar') is-invalid @enderror" name="avatar" value="{{ old('avatar') }}">
+                    </div>
+                    @error('avatar')
                     <strong>{{ $message }}</strong>
                     @enderror
                 </div>

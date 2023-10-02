@@ -1,15 +1,51 @@
 @extends('header')
 @section('content')
-<div>
+
+<div class="container text-center">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <h4>Thông tin cá nhân</h4>
+        <div class="col-2">
+            @if(empty($user->avatar))
+            <img src="{{ asset('avatar.png') }}" class="rounded mx-auto d-block" style="max-width: 100%" alt="Avatar">
+            @else
+            <img src="{{ asset($user->avatar) }}" class="rounded mx-auto d-block" style="max-width: 100%" alt="Avatar">
+            @endif
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Chỉnh sửa</button>
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p>Chỉnh sửa ảnh đại diện</p>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('employee.update_avatar') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="avatar" class="col-form-label">Chọn ảnh: </label>
+                                    <input type="file" name="avatar" class="form-control @error('avatar') is-invalid @enderror" onchange="previewImage(this)">
+                                    @error('avatar')
+                                    <strong>{{ $message }}</strong>
+                                    @enderror
+                                    <img id="image-preview" src="{{ asset($user->avatar ?? 'avatar.png') }}" alt="Preview" style="max-width: 100%">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Chỉnh sửa</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>{{ $user->name }}</p>
+        </div>
+        <div class="col-10">
             @if (session('success'))
             <div class="alert alert-success" role="alert">
                 {{ session('success') }}
             </div>
             @endif
-            <h4>{{ $user->name }}</h4>
-            <form action="{{ route('employee.update', $user) }}" method="POST">
+            <form action="{{ route('employee.update', auth()->user()) }}" method="POST">
                 @method('PUT')
                 @csrf
                 <div class="mb-3 row">
@@ -82,13 +118,26 @@
                     <strong>{{ $message }}</strong>
                     @enderror
                 </div>
-                @can('update', $user)
                 <div class="d-grid gap-2">
                     <button class="btn btn-primary" type="submit">Sửa</button>
                 </div>
-                @endcan
             </form>
         </div>
     </div>
 </div>
+
 @endsection
+
+<script>
+    function previewImage(input) {
+        // console.log(input.files[0]);
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var preview = document.getElementById('image-preview');
+                preview.src = reader.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

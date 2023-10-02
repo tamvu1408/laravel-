@@ -18,6 +18,7 @@
             </div>
             <div class="d-flex">
                 <div>{{ Auth::user()->name }}</div>
+                <a href="{{ route('employee.profile') }}">Profile</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="btn btn-primary btn-sm" type="submit">Đăng xuất</button>
