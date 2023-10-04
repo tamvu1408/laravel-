@@ -29,8 +29,8 @@ class DepartmentRepository
     {
         try {
             $department = Department::findOrFail($id);
-            $data = $department->employees;
-            return $data;
+            $employees = $department->employees;
+            return $employees;
         } catch (ModelNotFoundException $e) {
             return [];
         }
