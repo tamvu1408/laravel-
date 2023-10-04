@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'department_id',
+        'birth_date',
+        'gender',
+        'starting_date',
+        'role',
+        'status',
+        'avatar',
     ];
 
     /**
@@ -42,4 +50,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function manager()
+    {
+        return $this->hasOne(Department::class, 'manager_id');
+    }
+
+    public function updateUser($user)
+    {
+        return User::update($user);
+    }
+
+    public function createUser($user)
+    {
+        $user['password'] = bcrypt($user['password']);
+        
+        return User::create($user);
+    }
 }
